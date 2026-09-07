@@ -55,10 +55,10 @@ module fpga_top #(
     // ---------- debounce de los 4 botones ----------
     wire pulso_inc, pulso_dec, pulso_conf, pulso_usar_ant;
 
-    debounce #(.LIMIT(DEBOUNCE_LIMIT)) db_inc  (.clk(i_Clk), .boton_crudo(i_Switch_1), .pulso(pulso_inc));
-    debounce #(.LIMIT(DEBOUNCE_LIMIT)) db_dec  (.clk(i_Clk), .boton_crudo(i_Switch_2), .pulso(pulso_dec));
-    debounce #(.LIMIT(DEBOUNCE_LIMIT)) db_conf (.clk(i_Clk), .boton_crudo(i_Switch_3), .pulso(pulso_conf));
-    debounce #(.LIMIT(DEBOUNCE_LIMIT)) db_ant  (.clk(i_Clk), .boton_crudo(i_Switch_4), .pulso(pulso_usar_ant));
+    debounce #(.LIMIT(DEBOUNCE_LIMIT)) db_inc  (.clk(i_Clk), .boton_crudo(~i_Switch_1), .pulso(pulso_inc));
+    debounce #(.LIMIT(DEBOUNCE_LIMIT)) db_dec  (.clk(i_Clk), .boton_crudo(~i_Switch_2), .pulso(pulso_dec));
+    debounce #(.LIMIT(DEBOUNCE_LIMIT)) db_conf (.clk(i_Clk), .boton_crudo(~i_Switch_3), .pulso(pulso_conf));
+    debounce #(.LIMIT(DEBOUNCE_LIMIT)) db_ant  (.clk(i_Clk), .boton_crudo(~i_Switch_4), .pulso(pulso_usar_ant));
 
     // ---------- maquina de estados ----------
     localparam S_OP  = 2'b00;
@@ -167,21 +167,21 @@ module fpga_top #(
     wire s2_a, s2_b, s2_c, s2_d, s2_e, s2_f, s2_g;
     bin_a_7seg deco_mag (.n(magnitud), .a(s2_a), .b(s2_b), .c(s2_c), .d(s2_d), .e(s2_e), .f(s2_f), .g(s2_g));
 
-    // ---------- salida final a los pines, apagando todo si corresponde ----------
-    and (o_Segment1_A, s1_a, mostrar_valor);
-    and (o_Segment1_B, s1_b, mostrar_valor);
-    and (o_Segment1_C, s1_c, mostrar_valor);
-    and (o_Segment1_D, s1_d, mostrar_valor);
-    and (o_Segment1_E, s1_e, mostrar_valor);
-    and (o_Segment1_F, s1_f, mostrar_valor);
-    and (o_Segment1_G, s1_g, mostrar_valor);
+    // ---------- salida final a los pines (logica invertida NAND para active-low) ----------
+    nand (o_Segment1_A, s1_a, mostrar_valor);
+    nand (o_Segment1_B, s1_b, mostrar_valor);
+    nand (o_Segment1_C, s1_c, mostrar_valor);
+    nand (o_Segment1_D, s1_d, mostrar_valor);
+    nand (o_Segment1_E, s1_e, mostrar_valor);
+    nand (o_Segment1_F, s1_f, mostrar_valor);
+    nand (o_Segment1_G, s1_g, mostrar_valor);
 
-    and (o_Segment2_A, s2_a, mostrar_valor);
-    and (o_Segment2_B, s2_b, mostrar_valor);
-    and (o_Segment2_C, s2_c, mostrar_valor);
-    and (o_Segment2_D, s2_d, mostrar_valor);
-    and (o_Segment2_E, s2_e, mostrar_valor);
-    and (o_Segment2_F, s2_f, mostrar_valor);
-    and (o_Segment2_G, s2_g, mostrar_valor);
+    nand (o_Segment2_A, s2_a, mostrar_valor);
+    nand (o_Segment2_B, s2_b, mostrar_valor);
+    nand (o_Segment2_C, s2_c, mostrar_valor);
+    nand (o_Segment2_D, s2_d, mostrar_valor);
+    nand (o_Segment2_E, s2_e, mostrar_valor);
+    nand (o_Segment2_F, s2_f, mostrar_valor);
+    nand (o_Segment2_G, s2_g, mostrar_valor);
 
 endmodule
