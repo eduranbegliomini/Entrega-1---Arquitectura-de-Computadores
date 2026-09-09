@@ -1,8 +1,3 @@
-// mux8to1_4bit_tb.v
-// Recorremos los 8 valores de sel (000 a 111) y chequeamos que salga
-// la entrada correspondiente. A cada entrada le damos un valor distinto
-// (0 a 7) para que sea facil ver si se mezclaron canales.
-
 `timescale 1ns/1ps
 
 module mux8to1_4bit_tb;

@@ -1,7 +1,3 @@
-// reg4_tb.v
-// Probamos: carga con ejecutar=1, que se mantenga el valor con ejecutar=0
-// aunque cambiemos "d", y una segunda carga distinta.
-
 `timescale 1ns/1ps
 
 module reg4_tb;
@@ -12,7 +8,6 @@ module reg4_tb;
 
     reg4 dut (.clk(clk), .ejecutar(ejecutar), .d(d), .q(q));
 
-    // clk de periodo 10ns
     initial clk = 0;
     always #5 clk = ~clk;
 
@@ -25,18 +20,15 @@ module reg4_tb;
         if (q !== 4'b1010) $display("FALLO: deberia haber cargado 1010, q=%b", q);
         else $display("OK: cargo 1010 -> q=%b", q);
 
-        // ahora ejecutar=0 y cambiamos d: q no se deberia mover
         ejecutar = 0; d = 4'b0101;
         @(posedge clk); #1;
         if (q !== 4'b1010) $display("FALLO: con ejecutar=0 no deberia cambiar, q=%b", q);
         else $display("OK: con ejecutar=0 se mantuvo q=%b", q);
 
-        // otro flanco mas sin ejecutar, sigue igual
         @(posedge clk); #1;
         if (q !== 4'b1010) $display("FALLO: deberia seguir en 1010, q=%b", q);
         else $display("OK: sigue en q=%b", q);
 
-        // ahora si cargamos el nuevo valor
         ejecutar = 1;
         @(posedge clk); #1;
         if (q !== 4'b0101) $display("FALLO: deberia haber cargado 0101, q=%b", q);

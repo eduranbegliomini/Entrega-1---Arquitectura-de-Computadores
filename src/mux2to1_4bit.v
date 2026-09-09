@@ -1,8 +1,3 @@
-// mux2to1_4bit.v
-// Mux 2:1 de 4 bits. Si sel=0 pasa d0, si sel=1 pasa d1.
-// Ecuacion de un mux 2:1 normal: y = (sel' and d0) or (sel and d1)
-// Se repite la misma logica para cada uno de los 4 bits.
-
 module mux2to1_4bit (
     input  [3:0] d0,
     input  [3:0] d1,

@@ -1,9 +1,3 @@
-// adder4_tb.v
-// Probamos suma normal, resta A-B y resta B-A (con las entradas invertidas
-// a mano, como se va a usar en calculadora_4bits). Casos borde: overflow
-// en la suma (se pierde el carry, quedan solo 4 bits) y restas que dan
-// negativo (representado en complemento a 2).
-
 `timescale 1ns/1ps
 
 module adder4_tb;

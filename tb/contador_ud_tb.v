@@ -1,7 +1,3 @@
-// contador_ud_tb.v
-// Probamos incrementar, decrementar, y los dos casos de vuelta ciclica
-// (wraparound): del maximo al subir, y de 0 al bajar.
-
 `timescale 1ns/1ps
 
 module contador_ud_tb;
@@ -32,26 +28,25 @@ module contador_ud_tb;
 
         inc = 0; dec = 0;
 
-        pulso_inc; // 0 -> 1
+        pulso_inc; 
         if (valor !== 4'd1) $display("FALLO: esperaba 1, valor=%d", valor);
         else $display("OK: incremento -> valor=%d", valor);
 
-        pulso_inc; pulso_inc; // 1 -> 2 -> 3
+        pulso_inc; pulso_inc; 
         if (valor !== 4'd3) $display("FALLO: esperaba 3, valor=%d", valor);
         else $display("OK: incrementos -> valor=%d", valor);
 
-        pulso_dec; // 3 -> 2
+        pulso_dec; 
         if (valor !== 4'd2) $display("FALLO: esperaba 2, valor=%d", valor);
         else $display("OK: decremento -> valor=%d", valor);
 
-        // llevamos a 0 y probamos que bajar de 0 da la vuelta al maximo (15)
-        pulso_dec; pulso_dec; // 2 -> 1 -> 0
+        pulso_dec; pulso_dec; 
         if (valor !== 4'd0) $display("FALLO: esperaba 0, valor=%d", valor);
-        pulso_dec; // 0 -> 15 (wraparound)
+        pulso_dec; 
         if (valor !== 4'd15) $display("FALLO: esperaba 15 (wraparound), valor=%d", valor);
         else $display("OK: wraparound bajando -> valor=%d", valor);
 
-        pulso_inc; // 15 -> 0 (wraparound)
+        pulso_inc;
         if (valor !== 4'd0) $display("FALLO: esperaba 0 (wraparound), valor=%d", valor);
         else $display("OK: wraparound subiendo -> valor=%d", valor);
 

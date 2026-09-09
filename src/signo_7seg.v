@@ -1,7 +1,3 @@
-// signo_7seg.v
-// Maneja el display del signo: si es negativo prende solo el segmento
-// del medio (una rayita "-"), si es positivo o cero lo deja apagado.
-
 module signo_7seg (
     input  signo,
     output a, b, c, d, e, f, g

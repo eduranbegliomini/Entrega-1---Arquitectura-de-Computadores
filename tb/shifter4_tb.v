@@ -1,8 +1,3 @@
-// shifter4_tb.v
-// Probamos las 4 cantidades de desplazamiento (00,01,10,11) para cada
-// direccion, con un valor de A que tenga 1s y 0s mezclados para pillar
-// cualquier bit mal conectado.
-
 `timescale 1ns/1ps
 
 module shifter4_tb;

@@ -1,8 +1,3 @@
-// full_adder_tb.v
-// Testbench del full adder. Como son solo 3 entradas, probamos las 8
-// combinaciones posibles (exhaustivo) y comparamos contra el resultado
-// esperado calculado "a mano" con + (aca si se puede, es testbench, no diseno).
-
 `timescale 1ns/1ps
 
 module full_adder_tb;
@@ -11,7 +6,7 @@ module full_adder_tb;
     wire s, cout;
 
     integer i;
-    reg [1:0] esperado; // {cout_esperado, s_esperado}
+    reg [1:0] esperado; 
     integer errores;
 
     full_adder dut (
@@ -30,9 +25,9 @@ module full_adder_tb;
 
         for (i = 0; i < 8; i = i + 1) begin
             {a, b, cin} = i[2:0];
-            #10; // esperamos que se propague la logica combinacional
+            #10; 
 
-            esperado = a + b + cin; // suma normal de 1 bit, esto da 2 bits: {cout, s}
+            esperado = a + b + cin; 
 
             if (s !== esperado[0] || cout !== esperado[1]) begin
                 $display("FALLO: a=%b b=%b cin=%b -> s=%b cout=%b (esperado s=%b cout=%b)",

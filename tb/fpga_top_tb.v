@@ -1,13 +1,3 @@
-// fpga_top_tb.v
-// Prueba de integracion completa: simulamos presionar los botones (con
-// LIMIT de debounce chico para que la simulacion no demore) y recorremos
-// un par de ciclos completos de la calculadora, revisando el resultado
-// interno y las señales de display.
-//
-// Esto prueba que la maquina de estados y el cableado estan bien; el
-// timing real de los botones fisicos (rebotes, milisegundos) ya se
-// probo aparte en debounce_tb.v.
-
 `timescale 1ns/1ps
 
 module fpga_top_tb;
@@ -15,7 +5,7 @@ module fpga_top_tb;
     localparam LIMIT_TB = 3;
 
     reg clk;
-    reg sw1, sw2, sw3, sw4; // 1 = suelto, 0 = presionado
+    reg sw1, sw2, sw3, sw4; 
 
     wire led1, led2, led3, led4;
     wire seg1_a, seg1_b, seg1_c, seg1_d, seg1_e, seg1_f, seg1_g;
@@ -40,10 +30,6 @@ module fpga_top_tb;
     initial clk = 0;
     always #5 clk = ~clk;
 
-    // dejan el boton presionado el tiempo suficiente para pasar el
-    // debounce, y despues lo sueltan y esperan a que se estabilice de nuevo.
-    // (un task por boton porque en Verilog normal no se puede pasar un
-    // reg por referencia a un task)
     task presionar_sw1;
         begin
             sw1 = 0; repeat (LIMIT_TB + 3) @(posedge clk);
@@ -74,12 +60,6 @@ module fpga_top_tb;
 
     integer i;
 
-    // los contadores de codigo/op1/op2 NO se reinician solos entre un
-    // ciclo y el siguiente (a proposito, el profe dijo que eso queda a
-    // criterio nuestro, ver Q&A). Para que el testbench pueda pedir
-    // "dejalo en tal valor" sin importar en que quedo la vez anterior,
-    // estos tasks bajan el contador hasta 0 presionando sw2 las veces
-    // que hagan falta, y de ahi se sube con sw1 al valor que se quiera.
     task reset_codigo;
         begin
             while (dut.codigo_reg !== 3'd0) presionar_sw2;
@@ -105,27 +85,23 @@ module fpga_top_tb;
         sw1 = 1; sw2 = 1; sw3 = 1; sw4 = 1;
         repeat (LIMIT_TB + 3) @(posedge clk);
 
-        // ---- ciclo 1: suma 3 + 4 = 7 ----
-        // codigo: partimos en 000, subimos 1 vez -> 001 (suma)
         presionar_sw1;
         if (dut.codigo_reg !== 3'b001) $display("FALLO: codigo deberia ser 001, es %b", dut.codigo_reg);
         else $display("OK: codigo=001 (suma)");
 
-        presionar_sw3; // confirmar -> pasa a S_OP1
+        presionar_sw3; 
         if (dut.estado !== 2'b01) $display("FALLO: deberia estar en S_OP1");
 
-        // op1 = 3
         for (i = 0; i < 3; i = i + 1) presionar_sw1;
         if (dut.op1_reg !== 4'd3) $display("FALLO: op1 deberia ser 3, es %d", dut.op1_reg);
 
-        presionar_sw3; // confirmar -> pasa a S_OP2
+        presionar_sw3; 
         if (dut.estado !== 2'b10) $display("FALLO: deberia estar en S_OP2");
 
-        // op2 = 4
         for (i = 0; i < 4; i = i + 1) presionar_sw1;
         if (dut.op2_reg !== 4'd4) $display("FALLO: op2 deberia ser 4, es %d", dut.op2_reg);
 
-        presionar_sw3; // confirmar -> ejecuta y pasa a S_RES
+        presionar_sw3;
         if (dut.estado !== 2'b11) $display("FALLO: deberia estar en S_RES");
 
         if (dut.resultado_calc !== 4'd7)
@@ -136,24 +112,23 @@ module fpga_top_tb;
         if (dut.mostrar_valor !== 1'b1)
             $display("FALLO: en S_RES el display deberia estar prendido");
 
-        presionar_sw3; // confirmar de nuevo -> vuelve a S_OP, ciclo nuevo
+        presionar_sw3; 
         if (dut.estado !== 2'b00) $display("FALLO: deberia volver a S_OP");
         if (dut.mostrar_valor !== 1'b0) $display("FALLO: en S_OP el display deberia estar apagado");
         else $display("OK: volvio a S_OP y el display se apago");
 
-        // ---- ciclo 2: resta 3 - 9 = -6 (para ver el signo) ----
         reset_codigo;
-        for (i = 0; i < 2; i = i + 1) presionar_sw1; // codigo 010 (resta)
+        for (i = 0; i < 2; i = i + 1) presionar_sw1; 
         if (dut.codigo_reg !== 3'b010) $display("FALLO: codigo deberia ser 010, es %b", dut.codigo_reg);
         presionar_sw3;
 
         reset_op1;
-        for (i = 0; i < 3; i = i + 1) presionar_sw1; // op1 = 3
+        for (i = 0; i < 3; i = i + 1) presionar_sw1; 
         presionar_sw3;
 
         reset_op2;
-        for (i = 0; i < 9; i = i + 1) presionar_sw1; // op2 = 9
-        presionar_sw3; // ejecuta
+        for (i = 0; i < 9; i = i + 1) presionar_sw1; 
+        presionar_sw3; 
 
         if (dut.resultado_calc !== 4'b1010)
             $display("FALLO: 3-9 deberia dar 1010 (-6), dio %b", dut.resultado_calc);
@@ -162,21 +137,20 @@ module fpga_top_tb;
         else
             $display("OK: 3-9 = %b, signo=%b magnitud=%d", dut.resultado_calc, dut.signo, dut.magnitud);
 
-        // ---- ciclo 3: encadenamiento, sumar 2 al resultado anterior (-6) ----
-        presionar_sw3; // vuelve a S_OP
+        presionar_sw3; 
 
         reset_codigo;
-        presionar_sw1; // codigo 001 (suma)
-        presionar_sw3; // -> S_OP1
+        presionar_sw1; 
+        presionar_sw3;
 
         reset_op1;
-        for (i = 0; i < 2; i = i + 1) presionar_sw1; // op1 = 2
-        presionar_sw3; // -> S_OP2
+        for (i = 0; i < 2; i = i + 1) presionar_sw1;
+        presionar_sw3; 
 
-        presionar_sw4; // usar resultado anterior como op2
+        presionar_sw4; 
         if (dut.sel_op2_reg !== 1'b1) $display("FALLO: sel_op2_reg deberia quedar en 1");
 
-        presionar_sw3; // ejecuta: 2 + (-6) = -4
+        presionar_sw3;
 
         if (dut.resultado_calc !== 4'b1100)
             $display("FALLO: 2+(-6) deberia dar 1100 (-4), dio %b", dut.resultado_calc);

@@ -1,8 +1,3 @@
-// magnitud4_tb.v
-// Probamos positivos, negativos, cero y el caso borde -8 (que no tiene
-// pareja positiva en 4 bits, pero su magnitud 8 si entra en el campo
-// de 4 bits sin signo).
-
 `timescale 1ns/1ps
 
 module magnitud4_tb;

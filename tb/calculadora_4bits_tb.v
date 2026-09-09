@@ -1,9 +1,3 @@
-// calculadora_4bits_tb.v
-// Testbench integrado: recorre las 6 operaciones (reinicio, suma, resta,
-// resta inversa, shift left, shift right) con un par de casos cada una,
-// mas los 2 codigos reservados y un caso de encadenamiento (usar el
-// resultado anterior como segundo operando).
-
 `timescale 1ns/1ps
 
 module calculadora_4bits_tb;
@@ -51,7 +45,7 @@ module calculadora_4bits_tb;
         $dumpfile("sim/calculadora_4bits_tb.vcd");
         $dumpvars(0, calculadora_4bits_tb);
 
-        // arrancamos con un reinicio para partir de un estado conocido
+        // partir de un estado conocido
         ejecutar_op(3'b000, 0, 4'd0, 4'd0, 4'b0000);
 
         // suma

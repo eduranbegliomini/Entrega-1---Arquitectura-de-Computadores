@@ -1,7 +1,3 @@
-// mux2to1_4bit_tb.v
-// Probamos sel=0 (debe salir d0), sel=1 (debe salir d1), con un par de
-// valores distintos para estar seguros de que no hay bits cruzados.
-
 `timescale 1ns/1ps
 
 module mux2to1_4bit_tb;
@@ -26,7 +22,6 @@ module mux2to1_4bit_tb;
         if (y !== d1) $display("FALLO: sel=1 deberia dar d1=%b, dio %b", d1, y);
         else $display("OK: sel=1 -> y=%b", y);
 
-        // otro par de valores para chequear de nuevo
         d0 = 4'b1111; d1 = 4'b0000;
         sel = 0; #10;
         if (y !== d0) $display("FALLO: sel=0 deberia dar d0=%b, dio %b", d0, y);

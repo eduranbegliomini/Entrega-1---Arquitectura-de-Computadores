@@ -1,7 +1,3 @@
-// bin_a_7seg_tb.v
-// Probamos los 16 digitos contra la tabla de segmentos de Nandland
-// (activo en alto). Guardamos el esperado como {a,b,c,d,e,f,g}.
-
 `timescale 1ns/1ps
 
 module bin_a_7seg_tb;
@@ -11,14 +7,12 @@ module bin_a_7seg_tb;
     wire [6:0] salida;
 
     integer i;
-    reg [6:0] esperado; // {a,b,c,d,e,f,g}
+    reg [6:0] esperado;
     integer errores;
 
     bin_a_7seg dut (.n(n), .a(a), .b(b), .c(c), .d(d), .e(e), .f(f), .g(g));
     assign salida = {a, b, c, d, e, f, g};
 
-    // tabla sacada de la hoja de Nandland (0x7E, 0x30, ... para 0-F),
-    // reescrita como {a,b,c,d,e,f,g}
     function [6:0] esperado_de(input [3:0] digito);
         case (digito)
             4'h0: esperado_de = 7'b1111110;
